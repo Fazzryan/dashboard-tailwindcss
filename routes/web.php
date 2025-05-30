@@ -6,6 +6,10 @@ Route::get('/', function () {
     return view('fe.pages.beranda');
 });
 
+Route::get('/login', function () {
+    return view('login');
+});
+
 
 //--------------------------------------------------------------------------
 //  Route Autentikasi
