@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     return view('fe.pages.beranda');
@@ -32,6 +33,15 @@ Route::group(['as' => 'be.', 'prefix' => '/dashboard'], function () {
     //--------------------------------------------------------------------------
     Route::get('/', function () {
         return view('be.pages.dashboard.index');
+    })->name('dashboard');
+
+    //--------------------------------------------------------------------------
+    //  Route Projects  
+    //--------------------------------------------------------------------------
+    Route::group(['as' => 'projects.', 'prefix' => '/projects'], function () {
+        Route::get('/', function () {
+            return view('be.pages.projects.index');
+        })->name('index');
     });
-    // Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::resource('projects', ProjectController::class);
 });

@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    @livewireStyles
     @include('fe.layouts.head')
 </head>
 
@@ -12,6 +13,8 @@
     <div class="container p-4 mx-auto">
         @yield('content')
     </div>
+
+    @livewireScripts
 </body>
 
 </html>

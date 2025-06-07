@@ -3,10 +3,35 @@
 
 @stack('meta-seo')
 
-@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
 <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 
 @stack('custom-css')
+
+<script>
+    // Alpine.js data function - akan otomatis terbaca oleh Alpine yang sudah di-import
+    function dashboardData() {
+        return {
+            sidebarOpen: false,
+            profileOpen: false,
+
+            init() {
+                console.log('Dashboard initialized');
+            },
+
+            toggleSidebar() {
+                this.sidebarOpen = !this.sidebarOpen;
+            },
+
+            closeSidebar() {
+                this.sidebarOpen = false;
+            },
+
+            openSidebar() {
+                this.sidebarOpen = true;
+            }
+        }
+    }
+</script>
