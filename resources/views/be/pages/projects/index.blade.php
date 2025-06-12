@@ -29,6 +29,5 @@
         </nav>
     </div>
 
-
-    <livewire:be.projects.project />
+    <livewire:be.projects.project-table />
 @endsection

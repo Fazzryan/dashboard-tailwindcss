@@ -4,7 +4,7 @@
         <div class="flex items-center">
             <!-- Mobile menu button -->
             <button @click="sidebarOpen = true"
-                class="p-2 text-gray-400 rounded-md lg:hidden hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                class="p-2 text-gray-400 rounded-md lg:hidden hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
                     </path>
@@ -20,7 +20,7 @@
             <!-- Search -->
             <div class="relative hidden sm:block">
                 <input type="text" placeholder="Search..."
-                    class="w-64 py-2 pl-10 pr-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50">
+                    class="w-64 py-2 pl-10 pr-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent bg-gray-50">
                 <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -41,9 +41,9 @@
             <!-- Profile dropdown -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open"
-                    class="flex items-center p-2 space-x-2 text-sm rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="flex items-center p-2 space-x-2 text-sm rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400">
                     <div
-                        class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500">
+                        class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-r from-primary-500 to-primary-300">
                         <span class="text-xs font-medium text-white">JD</span>
                     </div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
