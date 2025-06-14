@@ -9,11 +9,11 @@
 
 @section('content')
     <!-- Header -->
-    <div class="mb-8 sm:flex sm:justify-between sm:items-center">
+    <div class="mb-8 px-1 sm:flex sm:justify-between sm:items-center">
         <!-- 📁 Page Title -->
         <div>
-            <h1 class="mb-2 text-2xl font-semibold text-primary-900">Projects</h1>
-            <p class="text-primary-900">Manage and track your projects efficiently.</p>
+            <h1 class="mb-2 text-2xl font-semibold text-slate-600">Projects</h1>
+            <p class="text-slate-600">Manage and track your projects efficiently.</p>
         </div>
         <!-- Breadcrumb -->
         <nav class="mb-1 text-base text-gray-500" aria-label="Breadcrumb">
@@ -24,7 +24,7 @@
                         <path d="M6 6L14 10L6 14V6Z" />
                     </svg>
                 </li>
-                <li class="font-medium text-primary-700">Projects</li>
+                <li class="font-medium text-slate-600">Projects</li>
             </ol>
         </nav>
     </div>

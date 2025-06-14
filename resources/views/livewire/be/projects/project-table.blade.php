@@ -15,15 +15,27 @@
                 </div>
             </div>
 
-            <!-- Add Project Button -->
-            <button x-data @click="$wire.showModal = true"
-                class="flex items-center px-6 py-3 space-x-1 font-medium text-white transition-all duration-150 shadow-lg md:max-w-md bg-primary-400 hover:bg-primary-500 focus:ring-2 focus:ring-primary-300 rounded-xl hover:shadow-xl">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                <span class="text-sm">Add Project</span>
-            </button>
+
+            <!-- Tombol Add & Export -->
+            <div class="flex items-center justify-center space-x-2">
+                <button x-data @click="$wire.showModalExport = true"
+                    class="flex items-center px-6 py-3 space-x-1 font-medium text-white transition-all duration-150 shadow-lg md:max-w-md bg-green-400 hover:bg-green-500 focus:ring-2 focus:ring-green-300 rounded-xl hover:shadow-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="text-sm">Export CSV</span>
+                </button>
+
+                <button x-data @click="$wire.showModal = true"
+                    class="flex items-center px-6 py-3 space-x-1 font-medium text-white transition-all duration-150 shadow-lg md:max-w-md bg-primary-400 hover:bg-primary-500 focus:ring-2 focus:ring-primary-300 rounded-xl hover:shadow-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <span class="text-sm">Add Project</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -74,14 +86,14 @@
                 <tbody class="divide-y divide-gray-200/50">
                     @forelse ($projects as $project)
                         <tr class="border-t">
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
                                 {{ ($projects->currentPage() - 1) * $projects->perPage() + $loop->iteration }}
                             </td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">{{ $project->name }}</td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">{{ $project->status }}</td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">{{ $project->progress }}%</td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">{{ $project->client }}</td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ $project->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ $project->status }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ $project->progress }}%</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ $project->client }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
                                 @php
                                     $priorityClasses = [
                                         'High' => 'bg-red-100 text-red-800',
@@ -94,7 +106,7 @@
                                     {{ $project->priority }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm whitespace-nowrap">{{ $project->deadline }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ $project->deadline }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                 <button x-data @click="$wire.showModalEdit = true"
                                     wire:click="confirmEdit({{ $project->id }})"
@@ -139,7 +151,7 @@
 
     <!-- Pagination -->
     <div class="p-4 bg-white border shadow-sm border-primary-100 rounded-b-2xl">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-3 md:flex-row items-center justify-between">
             {{-- Info Pagination di Kiri --}}
             <div>
                 <p class="text-sm text-gray-700">
@@ -208,7 +220,6 @@
             @else
                 {{-- Placeholder untuk menjaga layout ketika 'all' dipilih --}}
                 <div class="flex space-x-2">
-                    <span class="px-3 py-1 text-sm text-gray-500">Semua data ditampilkan</span>
                 </div>
             @endif
         </div>
@@ -498,7 +509,7 @@
                         </h3>
                         <p class="mb-4 text-sm text-gray-500">
                             Are you sure you want to delete <strong>{{ $projectName }}</strong> project?
-                            {{ $project_id }} This
+                            This
                             action cannot be
                             undone.
                         </p>
@@ -511,6 +522,96 @@
                             <button type="submit"
                                 class="px-4 py-2.5 text-sm text-white transition-colors bg-rose-400 rounded-xl hover:bg-rose-500 focus:ring-2 focus:ring-rose-300">
                                 Delete Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Export CSV --}}
+    <div x-data="{ show: @entangle('showModalExport') }">
+        <div x-show="show" x-transition:enter="transition-opacity ease-in-out duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-in-out duration-500" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-40 bg-black bg-opacity-50"
+            style="display: none;">
+        </div>
+
+        <div x-show="show" x-transition.duration.250ms
+            class="fixed top-0 left-0 right-0 z-50 items-center justify-center w-full overflow-x-hidden overflow-y-auto md:inset-0"
+            style="display: none">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                <div
+                    class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white shadow rounded-3xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Export CSV</h3>
+                        <button @click="show = false; $wire.closeModalExport()"
+                            class="p-1 text-gray-400 hover:text-gray-600 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Divider / Garis Bawah -->
+                    <hr class="my-4 border-gray-200">
+
+                    <form wire:submit.prevent="exportSelectedData" class="mt-4 space-y-4">
+                        <!-- Kolom -->
+                        <div>
+                            <label class="block mb-3 font-medium text-slate-700">Pilih Kolom</label>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($exportableColumns as $key => $label)
+                                    <label class="relative flex items-center cursor-pointer group">
+                                        <input type="checkbox" wire:model.live="selectedColumns"
+                                            value="{{ $key }}" class="sr-only peer">
+                                        <div
+                                            class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium transition-all duration-200 bg-white border rounded-xl
+                         {{ in_array($key, $selectedColumns ?? [])
+                             ? 'border-primary-400 bg-primary-100 text-primary-500'
+                             : 'border-gray-200 text-gray-600 hover:border-primary-300 hover:bg-primary-50' }}">
+                                            <span class="flex items-center space-x-2">
+                                                <!-- Icon checkmark yang muncul ketika dipilih -->
+                                                @if (in_array($key, $selectedColumns ?? []))
+                                                    <svg class="w-4 h-4 text-primary-500" fill="currentColor"
+                                                        viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                @endif
+                                                <span>{{ $label }}</span>
+                                            </span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- Jumlah Item -->
+                        <div>
+                            <label for="exportPerPage" class="block mb-3 font-medium text-slate-700">Jumlah
+                                Data</label>
+                            <select wire:model.live="exportPerPage" id="exportPerPage"
+                                class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:outline-none focus:ring-primary-400 focus:border-transparent transition duration-200 ease-in-out text-slate-700">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
+
+                        <!-- Tombol -->
+                        <div class="flex justify-end pt-3 space-x-2">
+                            <button type="button" @click="show = false;"
+                                class="px-4 py-2.5 text-sm text-gray-700 transition-colors border border-gray-300 rounded-xl hover:bg-gray-100 focus:ring-1 focus:ring-gray-300">
+                                Close
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2.5 text-sm text-white transition-colors bg-green-400 rounded-xl hover:bg-green-500 focus:ring-2 focus:ring-green-300">
+                                Export Data
                             </button>
                         </div>
                     </form>

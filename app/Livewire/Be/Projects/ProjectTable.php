@@ -4,8 +4,9 @@ namespace App\Livewire\Be\Projects;
 
 use App\Models\Project;
 use Livewire\Component;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProjectTable extends Component
 {
@@ -15,6 +16,7 @@ class ProjectTable extends Component
     public $showModal = false;
     public $showModalEdit = false;
     public $showModalDelete = false;
+    public $showModalExport = false;
 
     public $perPage = 10;
 
@@ -28,6 +30,26 @@ class ProjectTable extends Component
     public $status = 'active';
     public $progress;
     public $deadline;
+
+    // Kolom yang bisa diexport
+    public $exportableColumns = [
+        'id' => 'ID',
+        'name' => 'Name',
+        'client' => 'Client',
+        'status' => 'Status',
+        'priority' => 'Priority',
+        'deadline' => 'Deadline',
+        'progress' => 'Progress',
+        'created_at' => 'Created At',
+    ];
+
+    public $selectedColumns = [];
+    public $exportPerPage = 10;
+
+    public function mount()
+    {
+        $this->selectedColumns = array_keys($this->exportableColumns); // default semua kolom dipilih
+    }
 
     public function updatingSearch()
     {
@@ -72,6 +94,11 @@ class ProjectTable extends Component
     public function closeModalDelete()
     {
         $this->showModalDelete = false;
+    }
+
+    public function closeModalExport()
+    {
+        $this->showModalExport = false;
     }
 
     // -------------------------------
@@ -191,4 +218,99 @@ class ProjectTable extends Component
 
         return view('livewire.be.projects.project-table', compact('projects'));
     }
+
+    public function exportSelectedData()
+    {
+        $query = Project::query()
+            ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))
+            ->orderBy('created_at', 'desc');
+
+        $fileName = 'projects_export_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $callback = function () use ($query) {
+            $file = fopen('php://output', 'w');
+
+            // Header CSV
+            fputcsv($file, array_intersect_key(
+                $this->exportableColumns,
+                array_flip($this->selectedColumns)
+            ));
+
+            // Data Rows
+            $limit = $this->exportPerPage === 'all' ? null : $this->exportPerPage;
+
+            if ($limit) {
+                $data = $query->take($limit)->get();
+            } else {
+                $data = $query->get();
+            }
+
+            foreach ($data as $project) {
+                $row = [];
+
+                foreach ($this->selectedColumns as $col) {
+                    $value = $project->{$col};
+
+                    if ($col === 'progress') {
+                        $value .= '%';
+                    }
+
+                    $row[] = $value;
+                }
+
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return Response::streamDownload($callback, $fileName, $headers);
+    }
+
+    // public function exportToCsv()
+    // {
+    //     // Query ulang untuk ambil semua data tanpa paginasi
+    //     $query = Project::query()
+    //         ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))
+    //         ->orderBy('created_at', 'desc');
+
+    //     $fileName = 'projects_export_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+    //     ];
+
+    //     $callback = function () use ($query) {
+    //         $file = fopen('php://output', 'w');
+
+    //         // Header CSV
+    //         fputcsv($file, ['ID', 'Name', 'Client', 'Status', 'Priority', 'Deadline', 'Progress', 'Created At']);
+
+    //         // Data Rows
+    //         $query->chunkById(200, function ($projects) use ($file) {
+    //             foreach ($projects as $project) {
+    //                 fputcsv($file, [
+    //                     $project->id,
+    //                     $project->name,
+    //                     $project->client,
+    //                     $project->status,
+    //                     $project->priority,
+    //                     $project->deadline,
+    //                     $project->progress . '%',
+    //                     $project->created_at,
+    //                 ]);
+    //             }
+    //         });
+
+    //         fclose($file);
+    //     };
+
+    //     return Response::streamDownload($callback, $fileName, $headers);
+    // }
 }
