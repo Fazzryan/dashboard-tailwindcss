@@ -3,9 +3,8 @@
 namespace App\Livewire\Be\Projects;
 
 use App\Models\Project;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Filesystem\AwsS3V3Adapter;
 use Livewire\Component;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
 
 class ProjectTable extends Component
@@ -16,6 +15,8 @@ class ProjectTable extends Component
     public $showModal = false;
     public $showModalEdit = false;
     public $showModalDelete = false;
+
+    public $perPage = 10;
 
     public $project_id;
     public $projectName;
@@ -28,13 +29,20 @@ class ProjectTable extends Component
     public $progress;
     public $deadline;
 
-    // public ?int $selectedProject = null;
-
     public function updatingSearch()
     {
         $this->resetPage();
     }
 
+    // Untuk reset halaman saat perPage berubah
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    // -------------------------------
+    // Fungsi Modal
+    // --------------------------------
     public function resetFormModal()
     {
         $this->project_id = null;
@@ -48,9 +56,6 @@ class ProjectTable extends Component
         ]);
     }
 
-    // -------------------------------
-    // Fungsi Modal
-    // --------------------------------
     public function closeModal()
     {
         $this->showModal = false;
@@ -161,10 +166,28 @@ class ProjectTable extends Component
 
     public function render()
     {
-        $projects = Project::query()
+        $query = Project::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->orderBy('created_at', 'desc');
+
+        if ($this->perPage === 'all') {
+            // Ambil semua data
+            $allProjects = $query->get();
+
+            // Buat paginator manual untuk "all" agar tetap kompatibel dengan view
+            $projects = new LengthAwarePaginator(
+                $allProjects, // items
+                $allProjects->count(), // total
+                $allProjects->count(), // perPage (sama dengan total)
+                1, // currentPage
+                [
+                    'path' => request()->url(),
+                    'pageName' => 'page',
+                ]
+            );
+        } else {
+            $projects = $query->paginate($this->perPage);
+        }
 
         return view('livewire.be.projects.project-table', compact('projects'));
     }

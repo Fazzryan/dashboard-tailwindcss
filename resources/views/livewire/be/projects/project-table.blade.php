@@ -143,49 +143,74 @@
             {{-- Info Pagination di Kiri --}}
             <div>
                 <p class="text-sm text-gray-700">
-                    Menampilkan
-                    <span class="font-medium">{{ $projects->firstItem() }}</span>
-                    hingga
-                    <span class="font-medium">{{ $projects->lastItem() }}</span>
-                    dari
-                    <span class="font-medium">{{ $projects->total() }}</span>
-                    item
+                    @if ($perPage === 'all')
+                        Menampilkan semua
+                        <span class="font-medium">{{ $projects->total() }}</span>
+                        item
+                    @else
+                        Menampilkan
+                        <span class="font-medium">{{ $projects->firstItem() }}</span>
+                        hingga
+                        <span class="font-medium">{{ $projects->lastItem() }}</span>
+                        dari
+                        <span class="font-medium">{{ $projects->total() }}</span>
+                        item
+                    @endif
                 </p>
             </div>
 
-            {{-- Navigasi Halaman di Kanan --}}
-            <div class="flex space-x-2">
-                {{-- Tombol Previous --}}
-                @if ($projects->onFirstPage())
-                    <span
-                        class="px-3 py-1 text-sm text-gray-600 bg-gray-100 border border-gray-200 rounded-lg">Previous</span>
-                @else
-                    <button wire:click="previousPage"
-                        class="px-3 py-1 text-sm text-white duration-150 rounded-lg bg-primary-400 hover:bg-primary-500">Previous</button>
-                @endif
-
-                {{-- Tombol Nomor Halaman --}}
-                @for ($page = 1; $page <= $projects->lastPage(); $page++)
-                    @if ($page == $projects->currentPage())
-                        <span
-                            class="px-3 py-1 text-sm border rounded-lg text-primary-500 bg-primary-100 border-primary-300">{{ $page }}</span>
-                    @else
-                        <button wire:click="gotoPage({{ $page }})"
-                            class="px-3 py-1 text-sm duration-150 bg-white border rounded-lg hover:bg-primary-100 hover:border-primary-200 hover:text-primary-500">
-                            {{ $page }}
-                        </button>
-                    @endif
-                @endfor
-
-                {{-- Tombol Next --}}
-                @if ($projects->hasMorePages())
-                    <button wire:click="nextPage"
-                        class="px-3 py-1 text-sm text-white duration-150 rounded-lg bg-primary-400 hover:bg-primary-500">Next</button>
-                @else
-                    <span
-                        class="px-3 py-1 text-sm text-gray-600 bg-gray-100 border border-gray-200 rounded-lg">Next</span>
-                @endif
+            {{-- Per Page di Tengah --}}
+            <div class="flex items-center space-x-2">
+                <label for="perPage" class="text-sm text-gray-700">Per halaman:</label>
+                <select wire:model.live="perPage" id="perPage"
+                    class="px-2 py-1 text-sm border border-gray-200 rounded-lg transition duration-150 focus:outline-none focus:ring-1 focus:ring-primary-400 focus:border-primary-400">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="all">All</option>
+                </select>
             </div>
+
+            {{-- Navigasi Halaman di Kanan --}}
+            @if ($perPage !== 'all')
+                <div class="flex space-x-2">
+                    {{-- Tombol Previous --}}
+                    @if ($projects->onFirstPage())
+                        <span
+                            class="px-3 py-1 text-sm text-gray-600 bg-gray-100 border border-gray-200 rounded-lg">Previous</span>
+                    @else
+                        <button wire:click="previousPage"
+                            class="px-3 py-1 text-sm text-white duration-150 rounded-lg bg-primary-400 hover:bg-primary-500">Previous</button>
+                    @endif
+
+                    {{-- Tombol Nomor Halaman --}}
+                    @for ($page = 1; $page <= $projects->lastPage(); $page++)
+                        @if ($page == $projects->currentPage())
+                            <span
+                                class="px-3 py-1 text-sm border rounded-lg text-primary-500 bg-primary-100 border-primary-300">{{ $page }}</span>
+                        @else
+                            <button wire:click="gotoPage({{ $page }})"
+                                class="px-3 py-1 text-sm duration-150 bg-white border rounded-lg hover:bg-primary-100 hover:border-primary-200 hover:text-primary-500">
+                                {{ $page }}
+                            </button>
+                        @endif
+                    @endfor
+
+                    {{-- Tombol Next --}}
+                    @if ($projects->hasMorePages())
+                        <button wire:click="nextPage"
+                            class="px-3 py-1 text-sm text-white duration-150 rounded-lg bg-primary-400 hover:bg-primary-500">Next</button>
+                    @else
+                        <span
+                            class="px-3 py-1 text-sm text-gray-600 bg-gray-100 border border-gray-200 rounded-lg">Next</span>
+                    @endif
+                </div>
+            @else
+                {{-- Placeholder untuk menjaga layout ketika 'all' dipilih --}}
+                <div class="flex space-x-2">
+                    <span class="px-3 py-1 text-sm text-gray-500">Semua data ditampilkan</span>
+                </div>
+            @endif
         </div>
     </div>
 
